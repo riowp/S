@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000">
+
+    <!-- Kamera -->
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <androidx.camera.view.PreviewView android:id="@+id/previewViewKeluar"
+            android:layout_width="match_parent" android:layout_height="match_parent" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+            android:orientation="vertical" android:gravity="center">
+            <View android:layout_width="220dp" android:layout_height="220dp"
+                android:background="@drawable/scan_frame" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:background="#CCBF360C" android:padding="10dp">
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="KELUAR MIP" android:textColor="#FFFFFF"
+                android:textSize="13sp" android:textStyle="bold" />
+            <TextView android:id="@+id/tvKeluarInfo" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:textColor="#FFE0B2" android:textSize="12sp" />
+            <TextView android:id="@+id/tvKeluarCounter" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:textColor="#FFFFFF"
+                android:textSize="12sp" android:textStyle="bold" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Panel bawah -->
+    <ScrollView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:background="#F8F9FA">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="14dp">
+
+            <TextView android:id="@+id/tvKeluarStatus"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Menunggu scan..." android:textColor="#FFFFFF"
+                android:textSize="13sp" android:gravity="center" android:padding="8dp"
+                android:background="#37474F" android:layout_marginBottom="10dp" />
+
+            <!-- Input manual -->
+            <LinearLayout android:id="@+id/layoutKeluarManualToggle"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:background="#FFF3E0" android:padding="10dp"
+                android:layout_marginBottom="10dp" android:visibility="gone">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="✏ Input Manual"
+                    android:textColor="#BF360C" android:textSize="13sp" android:textStyle="bold" />
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchKeluarManual"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <!-- No. Tiket -->
+            <TextView android:id="@+id/tvKeluarTicketLabel"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="No. Tiket (dari Barcode)"
+                android:textColor="#BF360C" android:textSize="11sp" android:textStyle="bold"
+                android:layout_marginBottom="4dp" android:paddingStart="4dp" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+                <TextView android:id="@+id/tvKeluarSjbPrefix"
+                    android:layout_width="wrap_content" android:layout_height="52dp"
+                    android:text="SJB-" android:gravity="center"
+                    android:textColor="#BF360C" android:textSize="15sp" android:textStyle="bold"
+                    android:paddingStart="4dp" android:paddingEnd="4dp"
+                    android:visibility="gone" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxStrokeColor="#BF360C"
+                    android:theme="@style/LightInputTheme">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etKeluarTicket" android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Menunggu scan barcode..."
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:cursorVisible="false"
+                        android:textColor="#212121" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <!-- Tujuan -->
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Tujuan" android:textColor="#37474F"
+                android:textSize="12sp" android:textStyle="bold" android:layout_marginBottom="4dp" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTujuanSdj"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                    android:layout_marginEnd="4dp" android:text="SDJ" android:textSize="13sp"
+                    android:insetTop="0dp" android:insetBottom="0dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTujuanMas"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                    android:layout_marginEnd="4dp" android:text="PT MAS" android:textSize="13sp"
+                    android:insetTop="0dp" android:insetBottom="0dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTujuanKm107"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                    android:text="KM107" android:textSize="13sp"
+                    android:insetTop="0dp" android:insetBottom="0dp" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal" android:layout_marginTop="6dp"
+                android:layout_marginBottom="12dp">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTujuanKm36"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                    android:layout_marginEnd="4dp" android:text="KM36" android:textSize="13sp"
+                    android:insetTop="0dp" android:insetBottom="0dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnTujuanMerapi"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp" android:layout_height="52dp" android:layout_weight="1"
+                    android:text="MERAPI 2" android:textSize="13sp"
+                    android:insetTop="0dp" android:insetBottom="0dp" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveKeluar" android:layout_width="match_parent"
+                android:layout_height="56dp" android:text="SIMPAN KELUAR"
+                android:textSize="15sp" android:textStyle="bold"
+                app:backgroundTint="#BF360C" app:cornerRadius="8dp" />
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Setelah simpan, kamera langsung siap untuk tiket berikutnya"
+                android:textColor="#90A4AE" android:textSize="11sp" android:gravity="center" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
