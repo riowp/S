@@ -1,0 +1,81 @@
+name: Build DumpScan APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Android SDK dipasang manual — TIDAK memakai android-actions/setup-android
+      # (action itu error: "Failed to find package 'tools'")
+      - name: Setup Android SDK manually
+        run: |
+          SDK=$HOME/android-sdk
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+          mkdir -p $SDK/cmdline-tools
+          unzip -q cmdline-tools.zip -d $SDK/cmdline-tools
+          mv $SDK/cmdline-tools/cmdline-tools $SDK/cmdline-tools/latest
+          echo "ANDROID_HOME=$SDK" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=$SDK" >> $GITHUB_ENV
+          echo "$SDK/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$SDK/platform-tools" >> $GITHUB_PATH
+
+      - name: Install SDK packages
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+      # Gradle dipasang langsung — tidak butuh gradle-wrapper.jar di repo
+      - name: Setup Gradle 8.1.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.1.1'
+
+      - name: Cari folder project
+        id: proj
+        run: |
+          GRADLE_FILE=$(find . -name "settings.gradle*" -not -path "*/build/*" | head -1)
+          if [ -z "$GRADLE_FILE" ]; then
+            echo "❌ settings.gradle tidak ditemukan di repo"; exit 1
+          fi
+          DIR=$(dirname "$GRADLE_FILE")
+          echo "Project ditemukan di: $DIR"
+          echo "dir=$DIR" >> $GITHUB_OUTPUT
+
+      # Timpa local.properties agar tidak memakai path SDK dari laptop
+      - name: Tulis local.properties
+        run: echo "sdk.dir=$ANDROID_HOME" > "${{ steps.proj.outputs.dir }}/local.properties"
+
+      - name: Build APK
+        working-directory: ${{ steps.proj.outputs.dir }}
+        run: gradle assembleDebug --no-daemon --stacktrace
+
+      - name: Kumpulkan APK
+        run: |
+          mkdir -p output
+          APK=$(find "${{ steps.proj.outputs.dir }}" -path "*/outputs/apk/debug/*.apk" | head -1)
+          if [ -z "$APK" ]; then
+            echo "❌ File APK tidak ditemukan"; exit 1
+          fi
+          cp "$APK" output/DumpScan-build${{ github.run_number }}.apk
+          ls -lh output/
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DumpScan-APK-build${{ github.run_number }}
+          path: output/*.apk
+          retention-days: 90
